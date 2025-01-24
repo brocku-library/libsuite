@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>LibSuite Home</title>
+    <div th:replace="~{fragments/common :: headComponents}" th:remove="tag"></div>
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{fragments/common :: header}" th:remove="tag"></div>
+
+        <div class="row mt-3">
+            <h2>Welcome!</h2>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-sm-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Add Bulk Users in Alma</h5>
+                        <a th:href="@{/user}" class="btn btn-primary btn-block w-100">Go</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Featured Collections Recommender</h5>
+                        <a th:href="@{/featured}" class="btn btn-primary btn-block w-100">Go</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

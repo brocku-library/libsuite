@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<th:block th:fragment="headComponents">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="icon" th:href="@{/icons/clipboard-regular.svg}">
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" crossorigin="anonymous">
+</th:block>
+
+<body>
+    <div class="row mt-3" th:fragment="header">
+        <div class="row">
+            <div class="col-sm-3">
+                <h3>LibSuite</h3>
+            </div>
+            <div class="col-sm-9">
+                <p class="text-end">
+                    <a th:href="@{/}">Go Home</a>
+                </p>
+            </div>
+        </div>
+        <hr style="margin: auto;">
+    </div>
+</body>
+
+</html>

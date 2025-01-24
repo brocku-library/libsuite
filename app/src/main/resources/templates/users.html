@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Alma Add User Utility</title>
+    <div th:replace="~{fragments/common :: headComponents}" th:remove="tag"></div>
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{fragments/common :: header}" th:remove="tag"></div>
+
+        <div class="row mt-3">
+            <h2>Add Bulk Users in Alma</h2>
+        </div>
+
+        <div class="alert alert-success" th:if="${successMsg != null}">
+            <span th:text="${successMsg}"></span>
+        </div>
+
+        <div class="alert alert-danger" th:if="${failedUsers != null}">
+            <p>
+                Saving some users was unsuccessful. Possible reasons could be -
+                1. Email address already exists
+                2. Server is unavailable
+            </p>
+            <p>
+                List of users:
+                <ul>
+                    <li th:each="user: ${failedUsers}">
+                        <span th:text="${user.email}"></span>
+                    </li>
+                </ul>
+            </p>
+        </div>
+
+        <form th:action="@{/user}" th:object="${userCont}" method="post">
+            <div class="row mt-3">
+                <label for="userGroup" class="col-sm-2 col-form-label">Common User Group</label>
+                <div class="col-sm-5">
+                    <select id="userGroupOptions" th:field="*{userGroup}" class="form-select form-select-md"
+                        aria-label=".form-select-lg"></select>
+                    <p th:if="${#fields.hasErrors('userGroup')}" th:class="text-danger" th:errors="*{userGroup}"></p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <label for="expiryDate" class="col-sm-2 form-label">Common Expiry Date</label>
+                <div class="col-sm-5">
+                    <input type="text" th:field="*{expiryDateStr}" class="form-control" placeholder="DD/MM/YYYY">
+                    <p th:if="${#fields.hasErrors('expiryDateStr')}" th:class="text-danger"
+                        th:errors="*{expiryDateStr}"></p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <label for="users" class="form-label">Users to be added (Maximum 10)</label>
+                <p th:if="${#fields.hasErrors('users')}" th:class="text-danger" th:errors="*{users}"></p>
+
+                
+                <div class="row mt-3">
+                    <div class="col-sm-11">
+                        <div class="row">
+                            <div class="col-sm-4"><h6 class="ms-2">First Name</h6></div>
+                            <div class="col-sm-4"><h6 class="ms-2">Last Name</h6></div>
+                            <div class="col-sm-4"><h6 class="ms-2">Email</h6></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="listBody">
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="btn-toolbar justify-content-between">
+                    <button onclick="createNewRow()" id="addUser" type="button" class="btn btn-primary">Add +</button>
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        /* Populate user group dropdown*/
+        let userGroupJson = [(${ userGroups })];
+        let userGroupSelect = document.getElementById("userGroupOptions");
+        userGroupSelect.insertAdjacentHTML("beforeend", `<option value="">--- Select from below ---</option>`);
+        userGroupJson.forEach(ug => {
+            userGroupSelect.insertAdjacentHTML("beforeend", `<option value="${ug.code}">${ug.description}</option>`);
+        });
+        userGroupSelect.value = "[(${ userCont.userGroup })]";
+
+        /* Populate user list */
+        let users = [(${ userCont.usersJson })];
+        let userListSize = users.length;
+        let listBody = document.getElementById("listBody");
+
+        for (let i = 0; i < userListSize; i++) {
+            listBody.insertAdjacentHTML("beforeend",
+                `<div class="row mt-2" dtcount="${i}">
+                    <div class="col-sm-11">
+                        <div class="input-group">
+                            <input id="users${i}.firstName" type="text" name="users[${i}].firstName" value="${users[i].firstName}" class="form-control"/>
+                            <input id="users${i}.lastName" type="text" name="users[${i}].lastName" value="${users[i].lastName}" class="form-control"/>
+                            <input id="users${i}.email" type="text" name="users[${i}].email" value="${users[i].email}" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <button type="button" onclick="removeRow(this)" class="btn btn-danger btn-block w-100" disabled>Delete -</button>
+                    </div>
+                </div>`);
+        }
+
+        if (userListSize > 1) {
+            listBody.querySelectorAll("button").forEach(e => e.disabled = false);
+        }
+
+        function removeRow(e) {
+            let listBody = document.getElementById("listBody");
+            let rowCount = listBody.children.length;
+
+            if (rowCount > 1) {
+                e.parentElement.parentElement.remove();
+
+                let listBody = document.getElementById("listBody");
+                let rowCount = listBody.children.length;
+
+                if (rowCount == 1) {
+                    listBody.lastElementChild.querySelector("button").disabled = true;
+                }
+            }
+        }
+
+        function createNewRow() {
+            let listBody = document.getElementById("listBody");
+            let rowCount = listBody.children.length;
+
+            if (rowCount < 10) {
+                let nextRowId = Number(listBody.lastElementChild.getAttribute("dtcount")) + 1;
+
+                listBody.insertAdjacentHTML("beforeend",
+                    `<div class="row mt-2" dtcount="${nextRowId}">
+                        <div class="col-sm-11">
+                            <div class="input-group">
+                                <input id="users${nextRowId}.firstName" type="text" name="users[${nextRowId}].firstName" class="form-control"/>
+                                <input id="users${nextRowId}.lastName" type="text" name="users[${nextRowId}].lastName" class="form-control"/>
+                                <input id="users${nextRowId}.email" type="text" name="users[${nextRowId}].email" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <button type="button" onclick="removeRow(this)" class="btn btn-danger btn-block w-100">Delete -</button>
+                        </div>
+                    </div>`);
+
+                listBody.querySelectorAll("button").forEach(e => e.disabled = false);
+            } else {
+                document.getElementById("addUser").disabled = true;
+            }
+        }
+    </script>
+</body>
+
+</html>

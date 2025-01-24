@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Oops!</title>
+  <div th:replace="~{fragments/common :: headComponents}" th:remove="tag"></div>
+</head>
+<body>
+
+<div class="container">
+    <div th:replace="~{fragments/common :: header}" th:remove="tag"></div>
+    <h5>Maybe you are not supposed to view this page. Send Pranjal a text if that's not the case.</h5>
+    <a th:href="@{/}">Go home!</a>
+</div>
+
+</body>
+</html>

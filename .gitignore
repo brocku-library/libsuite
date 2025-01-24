@@ -1,0 +1,7 @@
+.gradle/
+.idea/
+.vscode/
+*/.gradle/
+app/build/
+*.jar
+*.env
