@@ -21,12 +21,14 @@
 
         <div class="alert alert-danger" th:if="${failedUsers != null}">
             <p>
-                Saving some users was unsuccessful. Possible reasons could be -
-                1. Email address already exists
-                2. Server is unavailable
+                Saving some users was unsuccessful. Possible reasons could be that -
+                <ol>
+                    <li>The email address already exists</li>
+                    <li>The ExLibris server is unavailable</li>
+                </ol>
             </p>
             <p>
-                List of users:
+                Users we couldn't save:
                 <ul>
                     <li th:each="user: ${failedUsers}">
                         <span th:text="${user.email}"></span>
@@ -129,11 +131,17 @@
                     listBody.lastElementChild.querySelector("button").disabled = true;
                 }
             }
+
+            document.getElementById("addUser").disabled = false;
         }
 
         function createNewRow() {
             let listBody = document.getElementById("listBody");
             let rowCount = listBody.children.length;
+
+            if (rowCount >= 9) {
+                document.getElementById("addUser").disabled = true;
+            }
 
             if (rowCount < 10) {
                 let nextRowId = Number(listBody.lastElementChild.getAttribute("dtcount")) + 1;
@@ -153,8 +161,6 @@
                     </div>`);
 
                 listBody.querySelectorAll("button").forEach(e => e.disabled = false);
-            } else {
-                document.getElementById("addUser").disabled = true;
             }
         }
     </script>

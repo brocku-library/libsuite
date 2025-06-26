@@ -33,6 +33,7 @@ public class UserService {
                     "record_type": {
                         "value": "PUBLIC"
                     },
+                    "primary_id": "%s",
                     "first_name": "%s",
                     "last_name": "%s",
                     "created_by": "exl_impl",
@@ -63,7 +64,65 @@ public class UserService {
                                 ]
                             }
                         ]
-                    }
+                    },
+                    "user_role": [
+                        {
+                            "status": {
+                                "value": "ACTIVE",
+                                "desc": "Active"
+                            },
+                            "scope": {
+                                "value": "01OCUL_BU",
+                                "desc": "Brock University"
+                            },
+                            "role_type": {
+                                "value": "200",
+                                "desc": "Patron"
+                            },
+                            "parameter": []
+                        },
+                        {
+                            "status": {
+                              "value": "ACTIVE",
+                              "desc": "Active"
+                            },
+                            "scope": {
+                              "value": "HAMILTON",
+                              "desc": "Instructional Resource Centre, Burlington Campus"
+                            },
+                            "role_type": {
+                                "value": "32",
+                                "desc": "Circulation Desk Operator"
+                            },
+                            "parameter": [
+                              {
+                                "type": {
+                                  "value": "CirculationDesk"
+                                },
+                                "scope": {
+                                  "value": "HAMILTON",
+                                  "desc": "Instructional Resource Centre, Burlington Campus"
+                                },
+                                "value": {
+                                  "value": "DEFAULT_CIRC_DESK",
+                                  "desc": "Burlington Desk"
+                                }
+                              },
+                              {
+                                "type": {
+                                  "value": "CantEditRestrictedUsers"
+                                },
+                                "scope": {
+                                  "value": "HAMILTON",
+                                  "desc": "Instructional Resource Centre, Burlington Campus"
+                                },
+                                "value": {
+                                  "value": "false"
+                                }
+                              }
+                            ]
+                          }
+                    ]
                 }
             """;
 
@@ -97,6 +156,7 @@ public class UserService {
 
         for (User user : userContainer.getUsers()) {
             String jsonBody = String.format(USER_BODY_JSON_STR,
+                    user.getEmail(),
                     user.getFirstName(),
                     user.getLastName(),
                     todayStr,
