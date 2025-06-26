@@ -1,11 +1,17 @@
 package easyuser.service;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.cache.annotation.Cacheable;
@@ -16,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 
@@ -154,6 +161,8 @@ public class UserService {
 
         List<User> storeFailedUsers = new ArrayList<>();
 
+        processPotentialUsersFromExcel(userContainer);
+
         for (User user : userContainer.getUsers()) {
             String jsonBody = String.format(USER_BODY_JSON_STR,
                     user.getEmail(),
@@ -184,5 +193,38 @@ public class UserService {
         }
 
         return storeFailedUsers;
+    }
+
+    private void processPotentialUsersFromExcel(UserContainer userContainer) {
+        if (userContainer.getExcelFile().getSize() == 0) {
+            return;
+        }
+
+        List<User> users = new ArrayList<>();
+        try {
+            Workbook xlWorkbook = new XSSFWorkbook(userContainer.getExcelFile().getInputStream());
+            Sheet sheet = xlWorkbook.getSheetAt(0);
+
+            int firstRow = sheet.getFirstRowNum();
+            int lastRow = sheet.getLastRowNum();
+            for (int index = firstRow + 1; index <= lastRow; index++) {
+                Row row = sheet.getRow(index);
+
+                try {
+                    String firstName = row.getCell(0).getStringCellValue();
+                    String lastName = row.getCell(1).getStringCellValue();
+                    String email = row.getCell(2).getStringCellValue();
+
+                    users.add(new User(firstName, lastName, email));
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            userContainer.setUsers(users);
+            xlWorkbook.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

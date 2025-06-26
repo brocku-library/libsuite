@@ -37,7 +37,7 @@
             </p>
         </div>
 
-        <form th:action="@{/user}" th:object="${userCont}" method="post">
+        <form th:action="@{/user}" th:object="${userCont}" enctype="multipart/form-data" method="post">
             <div class="row mt-3">
                 <label for="userGroup" class="col-sm-2 col-form-label">Common User Group</label>
                 <div class="col-sm-5">
@@ -54,23 +54,34 @@
                         th:errors="*{expiryDateStr}"></p>
                 </div>
             </div>
-            <div class="row mt-3">
+            <div class="row mt-5">
                 <label for="users" class="form-label">Users to be added (Maximum 10)</label>
                 <p th:if="${#fields.hasErrors('users')}" th:class="text-danger" th:errors="*{users}"></p>
+            </div>
 
-                
-                <div class="row mt-3">
-                    <div class="col-sm-11">
-                        <div class="row">
-                            <div class="col-sm-4"><h6 class="ms-2">First Name</h6></div>
-                            <div class="col-sm-4"><h6 class="ms-2">Last Name</h6></div>
-                            <div class="col-sm-4"><h6 class="ms-2">Email</h6></div>
-                        </div>
+            <div class="row mt-3">
+                <label for="excelFile" class="col-sm-2 col-form-label">Excel File</label>
+                <div class="col-sm-5">
+                    <input type="file" th:field="*{excelFile}" class="form-control">
+                    <p th:if="${#fields.hasErrors('excelFile')}" th:class="text-danger" th:errors="*{excelFile}"></p>
+
+                    <div class="mt-2 alert alert-warning py-1">
+                        <span>Entries below will be ignored if an excel file has been picked.</span>
                     </div>
                 </div>
+            </div>
 
-                <div id="listBody">
+            <div class="row mt-3">
+                <div class="col-sm-11">
+                    <div class="row">
+                        <div class="col-sm-4"><h6 class="ms-2">First Name</h6></div>
+                        <div class="col-sm-4"><h6 class="ms-2">Last Name</h6></div>
+                        <div class="col-sm-4"><h6 class="ms-2">Email</h6></div>
+                    </div>
                 </div>
+            </div>
+
+            <div id="listBody">
             </div>
 
             <div class="row mt-5">

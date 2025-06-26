@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.google.gson.Gson;
 
 import easyuser.web.validator.UserContainerValidator;
@@ -19,6 +21,7 @@ public class UserContainer {
     private String userGroup;
     private String expiryDateStr;
     private List<User> users;
+    private MultipartFile excelFile;
 
     public UserContainer() {
         users = new ArrayList<>();
@@ -73,4 +76,12 @@ public class UserContainer {
     public void setExpiryDateStr(String expiryDateStr) {
         this.expiryDateStr = expiryDateStr.trim();
     }
+
+    public MultipartFile getExcelFile() {
+        return excelFile;
+    }
+
+    public void setExcelFile(MultipartFile excelFile) {
+        this.excelFile = excelFile;
+    }    
 }
